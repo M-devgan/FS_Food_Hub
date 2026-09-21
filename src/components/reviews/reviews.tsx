@@ -5,7 +5,7 @@ function Reviews() {
       recipeName: "Creamy Alfredo Pasta",
       reviewer: "Komal",
       rating: 5,
-      comment: "Very creamy and delicious. I would make it again!",
+      comment: "Very creamy and tastey I would make it again!",
     },
     {
       id: 2,
