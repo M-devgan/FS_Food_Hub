@@ -1,0 +1,121 @@
+/* Main page */
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background-color: #fffaf5;
+  color: #333;
+}
+
+/* Header */
+header {
+  text-align: center;
+  padding: 30px 20px;
+  background-color: #8b4513;
+  color: white;
+}
+
+header h1 {
+  margin: 0;
+  font-size: 36px;
+}
+
+header p {
+  margin: 8px 0 0;
+}
+
+/* Main content */
+main {
+  width: 90%;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 30px 0;
+}
+
+/* Sections */
+.recipe-list,
+.ingredients-list,
+.reviews {
+  margin-bottom: 40px;
+}
+
+.recipe-list h2,
+.ingredients-list h2,
+.reviews h2 {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+/* Card layouts */
+.recipe-cards,
+.ingredient-cards,
+.review-list {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+
+/* Cards */
+.recipe-card,
+.ingredient-card,
+.review-card {
+  background-color: white;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Recipe and ingredient icons */
+.recipe-image,
+.ingredient-image {
+  font-size: 40px;
+  text-align: center;
+  margin-bottom: 15px;
+}
+
+/* Card headings */
+.recipe-card h3,
+.ingredient-card h3,
+.review-card h3 {
+  margin-top: 0;
+}
+
+/* Recipe button */
+.recipe-card button {
+  padding: 8px 14px;
+  border: none;
+  border-radius: 5px;
+  background-color: #8b4513;
+  color: white;
+  cursor: pointer;
+}
+
+.recipe-card button:hover {
+  background-color: #6f350f;
+}
+
+.recipe-card button:focus-visible {
+  outline: 3px solid #333;
+  outline-offset: 2px;
+}
+
+/* Footer */
+footer {
+  text-align: center;
+  padding: 20px;
+  background-color: #8b4513;
+  color: white;
+}
+
+/* Responsive layout */
+@media (max-width: 768px) {
+  .recipe-cards,
+  .ingredient-cards,
+  .review-list {
+    grid-template-columns: 1fr;
+  }
+
+  header h1 {
+    font-size: 30px;
+  }
+}
