@@ -5,14 +5,14 @@ function Reviews() {
       recipeName: "Creamy Alfredo Pasta",
       reviewer: "Komal",
       rating: 5,
-      comment: "Very creamy and delicious. I would make it again!",
+      comment: "Very creamy  I would make it again!",
     },
     {
       id: 2,
       recipeName: "Chicken Tacos",
       reviewer: "Amrinder",
       rating: 4,
-      comment: "The tacos were tasty and easy to make.",
+      comment: "The tacos were delicious to make.",
     },
     {
       id: 3,
