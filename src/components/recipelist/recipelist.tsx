@@ -1,5 +1,8 @@
+import { useState } from 'react'
+import RecipeForm from './RecipeForm'
+
 function RecipeList() {
-  const recipes = [
+  const [recipes, setRecipes] = useState([
     {
       id: 1,
       name: "Creamy Alfredo Pasta",
@@ -18,12 +21,14 @@ function RecipeList() {
       description: "Soft chocolate cake with a rich and sweet chocolate flavour.",
       ingredients: [4, 10, 11, 12, 13, 14],
     },
-  ];
+  ]);
 
   return (
     <section className="recipe-list">
       <h2>Popular Recipes</h2>
 
+      <RecipeForm recipes={recipes} setRecipes={setRecipes} />
+      
       <div className="recipe-cards">
         {recipes.map((recipe) => (
           <article className="recipe-card" key={recipe.id}>
@@ -35,6 +40,13 @@ function RecipeList() {
               <h3>{recipe.name}</h3>
               <p>{recipe.description}</p>
               <button type="button">View Recipe</button>
+
+              <button
+                type="button"
+                onClick={() => setRecipes(recipes.filter((item) => item.id !== recipe.id))}
+              >
+                Remove Recipe
+              </button>
             </div>
           </article>
         ))}
