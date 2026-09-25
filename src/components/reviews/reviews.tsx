@@ -12,7 +12,7 @@ function Reviews() {
       recipeName: "Chicken Tacos",
       reviewer: "Amrinder",
       rating: 4,
-      comment: "The tacos were tasty and easy to make.",
+      comment: "The tacos were delicious to make.",
     },
     {
       id: 3,
