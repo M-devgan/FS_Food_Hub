@@ -1,5 +1,6 @@
 import { useState } from "react";
 import ReviewForm from "./ReviewForm";
+import ReviewCard from "./ReviewCard";
 
 type Review = {
   id: number;
@@ -56,19 +57,15 @@ function Reviews() {
 
       <div className="review-list">
         {reviews.map((review) => (
-          <article className="review-card" key={review.id}>
-            <h3>{review.recipeName}</h3>
-
-            <p>
-              <strong>{review.reviewer}</strong> — {review.rating}/5
-            </p>
-
-            <p>{review.comment}</p>
-
-            <button onClick={() => removeReview(review.id)}>
-              Remove Review
-            </button>
-          </article>
+          <ReviewCard
+            key={review.id}
+            id={review.id}
+            recipeName={review.recipeName}
+            reviewer={review.reviewer}
+            rating={review.rating}
+            comment={review.comment}
+            removeReview={removeReview}
+          />
         ))}
       </div>
     </section>
