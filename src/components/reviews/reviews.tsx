@@ -25,8 +25,6 @@ function Reviews() {
       recipeName: "Chicken Tacos",
       reviewer: "Amrinder",
       rating: 4,
-      comment:
-        "The chicken was flavourful and the tacos were simple to prepare. A little more seasoning or spice could improve the overall taste.",
     },
     {
       id: 3,
