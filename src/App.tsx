@@ -14,7 +14,7 @@ function App() {
       <header>
         <h1>FoodieHub</h1>
         <p>Discover recipes, ingredients, and reviews</p>
-        
+
         <nav>
           <NavLink to="/recipes">Recipes</NavLink>
           <NavLink to="/ingredients">Ingredients</NavLink>
@@ -25,9 +25,27 @@ function App() {
       <main>
         <Routes>
           <Route path="/" element={<Navigate to="/recipes" replace />} />
-          <Route path="/recipes" element={<RecipeList />} />
-          <Route path="/ingredients" element={<IngredientsList />} />
-          <Route path="/reviews" element={<Reviews />} />
+
+          <Route
+            path="/recipes"
+            element={<RecipeList />}
+          />
+
+          <Route
+            path="/ingredients"
+            element={
+              <IngredientsList
+                recipesCooked={recipesCooked}
+                setRecipesCooked={setRecipesCooked}
+              />
+            }
+          />
+
+          <Route
+            path="/reviews"
+            element={<Reviews />}
+          />
+
           <Route path="*" element={<h2>Page Not Found</h2>} />
         </Routes>
       </main>

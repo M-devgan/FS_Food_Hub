@@ -1,8 +1,17 @@
 import { useState } from "react";
 import IngredientForm from "./IngredientForm";
 
+// Props received from App.tsx for shared state
+type IngredientsListProps = {
+  recipesCooked: number;
+  setRecipesCooked: React.Dispatch<React.SetStateAction<number>>;
+};
+
 // Ingredients component for displaying ingredients for each recipe
-function IngredientsList() {
+function IngredientsList({
+  recipesCooked,
+  setRecipesCooked,
+}: IngredientsListProps) {
 
   // Mock data for the ingredients section
   // recipes contains the IDs of the recipes that use each ingredient
@@ -104,6 +113,18 @@ function IngredientsList() {
   return (
     <section className="ingredients-list">
       <h2>Recipe Ingredients</h2>
+
+      {/* Display and update the shared state */}
+      <div className="shared-state">
+        <p>Recipes Cooked: {recipesCooked}</p>
+
+        <button
+          type="button"
+          onClick={() => setRecipesCooked(recipesCooked + 1)}
+        >
+          Add One
+        </button>
+      </div>
 
       {/* Form for adding a new ingredient */}
       <IngredientForm
