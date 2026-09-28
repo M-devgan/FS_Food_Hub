@@ -2,7 +2,7 @@ import './App.css'
 import RecipeList from './components/recipelist/recipelist'
 import IngredientsList from './components/ingredients/ingredients'
 import Reviews from './components/reviews/reviews'
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
+import { BrowserRouter, Routes, Route, Navigate, NavLink } from 'react-router-dom'
 
 function App() {
   return (
@@ -10,6 +10,12 @@ function App() {
       <header>
         <h1>FoodieHub</h1>
         <p>Discover recipes, ingredients, and reviews</p>
+        
+        <nav>
+          <NavLink to="/recipes">Recipes</NavLink>
+          <NavLink to="/ingredients">Ingredients</NavLink>
+          <NavLink to="/reviews">Reviews</NavLink>
+        </nav>
       </header>
 
       <main>
