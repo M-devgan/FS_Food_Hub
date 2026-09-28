@@ -99,6 +99,30 @@ main {
   outline-offset: 2px;
 }
 
+/* Ingredient buttons */
+.ingredient-form button,
+.ingredient-card button {
+  padding: 8px 14px;
+  border: none;
+  border-radius: 5px;
+  background-color: #8b4513;
+  color: white;
+  cursor: pointer;
+}
+
+/* Ingredient button hover */
+.ingredient-form button:hover,
+.ingredient-card button:hover {
+  background-color: #6f350f;
+}
+
+/* Ingredient button keyboard focus */
+.ingredient-form button:focus-visible,
+.ingredient-card button:focus-visible {
+  outline: 3px solid #333;
+  outline-offset: 2px;
+}
+
 /* Footer */
 footer {
   text-align: center;

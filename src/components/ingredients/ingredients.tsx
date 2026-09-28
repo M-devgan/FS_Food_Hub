@@ -1,9 +1,12 @@
+import { useState } from "react";
+import IngredientForm from "./IngredientForm";
+
 // Ingredients component for displaying ingredients for each recipe
 function IngredientsList() {
 
   // Mock data for the ingredients section
   // recipes contains the IDs of the recipes that use each ingredient
-  const ingredients = [
+  const [ingredients, setIngredients] = useState([
     {
       id: 1,
       name: "Pasta",
@@ -88,12 +91,25 @@ function IngredientsList() {
       characteristics: "Liquid dairy product that adds moisture",
       recipes: [3],
     },
-  ];
+  ]);
+
+  // Remove an ingredient from the list
+  const removeIngredient = (id: number) => {
+    setIngredients(
+      ingredients.filter((ingredient) => ingredient.id !== id)
+    );
+  };
 
   // Return the Ingredients section that will be displayed on the page
   return (
     <section className="ingredients-list">
       <h2>Recipe Ingredients</h2>
+
+      {/* Form for adding a new ingredient */}
+      <IngredientForm
+        ingredients={ingredients}
+        setIngredients={setIngredients}
+      />
 
       <div className="ingredient-cards">
 
@@ -110,6 +126,14 @@ function IngredientsList() {
             <div className="ingredient-content">
               <h3>{ingredient.name}</h3>
               <p>{ingredient.characteristics}</p>
+
+              {/* Remove the selected ingredient */}
+              <button
+                type="button"
+                onClick={() => removeIngredient(ingredient.id)}
+              >
+                Remove
+              </button>
             </div>
 
           </article>
