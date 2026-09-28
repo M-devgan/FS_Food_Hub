@@ -1,7 +1,17 @@
 import { useState } from 'react'
 import RecipeForm from './RecipeForm'
 
-function RecipeList() {
+// Props for the shared state from App.tsx
+type RecipeListProps = {
+  recipesCooked: number;
+  setRecipesCooked: React.Dispatch<React.SetStateAction<number>>;
+};
+
+function RecipeList({
+  recipesCooked,
+  setRecipesCooked,
+}: RecipeListProps) {
+
   const [recipes, setRecipes] = useState([
     {
       id: 1,
@@ -27,8 +37,23 @@ function RecipeList() {
     <section className="recipe-list">
       <h2>Popular Recipes</h2>
 
-      <RecipeForm recipes={recipes} setRecipes={setRecipes} />
-      
+      {/* Display and modify the shared state */}
+      <div className="shared-state">
+        <p>Recipes Cooked: {recipesCooked}</p>
+
+        <button
+          type="button"
+          onClick={() => setRecipesCooked(recipesCooked + 1)}
+        >
+          Add One
+        </button>
+      </div>
+
+      <RecipeForm
+        recipes={recipes}
+        setRecipes={setRecipes}
+      />
+
       <div className="recipe-cards">
         {recipes.map((recipe) => (
           <article className="recipe-card" key={recipe.id}>
@@ -39,11 +64,20 @@ function RecipeList() {
             <div className="recipe-content">
               <h3>{recipe.name}</h3>
               <p>{recipe.description}</p>
-              <button type="button">View Recipe</button>
+
+              <button type="button">
+                View Recipe
+              </button>
 
               <button
                 type="button"
-                onClick={() => setRecipes(recipes.filter((item) => item.id !== recipe.id))}
+                onClick={() =>
+                  setRecipes(
+                    recipes.filter(
+                      (item) => item.id !== recipe.id
+                    )
+                  )
+                }
               >
                 Remove Recipe
               </button>
@@ -56,5 +90,3 @@ function RecipeList() {
 }
 
 export default RecipeList;
-
- 

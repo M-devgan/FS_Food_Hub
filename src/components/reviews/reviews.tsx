@@ -10,7 +10,17 @@ type Review = {
   comment: string;
 };
 
-function Reviews() {
+// Props for the shared state from App.tsx
+type ReviewsProps = {
+  recipesCooked: number;
+  setRecipesCooked: React.Dispatch<React.SetStateAction<number>>;
+};
+
+function Reviews({
+  recipesCooked,
+  setRecipesCooked,
+}: ReviewsProps) {
+
   const [reviews, setReviews] = useState<Review[]>([
     {
       id: 1,
@@ -25,7 +35,8 @@ function Reviews() {
       recipeName: "Chicken Tacos",
       reviewer: "Amrinder",
       rating: 4,
-      comment : "The chicken was flavourful and the tacos were simple to prepare. A little more seasoning or spice could improve the overall taste.",
+      comment:
+        "The chicken was flavourful and the tacos were simple to prepare. A little more seasoning or spice could improve the overall taste.",
     },
     {
       id: 3,
@@ -48,6 +59,18 @@ function Reviews() {
   return (
     <section className="reviews">
       <h2>Recipe Reviews</h2>
+
+      {/* Display and modify the shared state */}
+      <div className="shared-state">
+        <p>Recipes Cooked: {recipesCooked}</p>
+
+        <button
+          type="button"
+          onClick={() => setRecipesCooked(recipesCooked + 1)}
+        >
+          Add One
+        </button>
+      </div>
 
       <ReviewForm
         reviews={reviews}
