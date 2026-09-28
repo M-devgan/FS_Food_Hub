@@ -24,11 +24,19 @@ function App() {
 
       <main>
         <Routes>
-          <Route path="/" element={<Navigate to="/recipes" replace />} />
+          <Route
+            path="/"
+            element={<Navigate to="/recipes" replace />}
+          />
 
           <Route
             path="/recipes"
-            element={<RecipeList />}
+            element={
+              <RecipeList
+                recipesCooked={recipesCooked}
+                setRecipesCooked={setRecipesCooked}
+              />
+            }
           />
 
           <Route
@@ -43,10 +51,18 @@ function App() {
 
           <Route
             path="/reviews"
-            element={<Reviews />}
+            element={
+              <Reviews
+                recipesCooked={recipesCooked}
+                setRecipesCooked={setRecipesCooked}
+              />
+            }
           />
 
-          <Route path="*" element={<h2>Page Not Found</h2>} />
+          <Route
+            path="*"
+            element={<h2>Page Not Found</h2>}
+          />
         </Routes>
       </main>
 
