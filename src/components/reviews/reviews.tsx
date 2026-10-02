@@ -1,0 +1,97 @@
+import { useState } from "react";
+import ReviewForm from "./ReviewForm";
+import ReviewCard from "./ReviewCard";
+
+type Review = {
+  id: number;
+  recipeName: string;
+  reviewer: string;
+  rating: number;
+  comment: string;
+};
+
+// Props for the shared state from App.tsx
+type ReviewsProps = {
+  recipesCooked: number;
+  setRecipesCooked: React.Dispatch<React.SetStateAction<number>>;
+};
+
+function Reviews({
+  recipesCooked,
+  setRecipesCooked,
+}: ReviewsProps) {
+
+  const [reviews, setReviews] = useState<Review[]>([
+    {
+      id: 1,
+      recipeName: "Creamy Alfredo Pasta",
+      reviewer: "Komal",
+      rating: 5,
+      comment:
+        "The pasta was creamy, rich, and full of flavour. Adding mushrooms or some fresh vegetables could make the dish even more enjoyable.",
+    },
+    {
+      id: 2,
+      recipeName: "Chicken Tacos",
+      reviewer: "Amrinder",
+      rating: 4,
+      comment:
+        "The chicken was flavourful and the tacos were simple to prepare. A little more seasoning or spice could improve the overall taste.",
+    },
+    {
+      id: 3,
+      recipeName: "Chocolate Cake",
+      reviewer: "Muskan",
+      rating: 5,
+      comment:
+        "The cake was soft, moist, and had a rich chocolate flavour. Fresh strawberries or a light topping would be a great addition.",
+    },
+  ]);
+
+  const removeReview = (id: number) => {
+    const updatedReviews = reviews.filter(
+      (review) => review.id !== id
+    );
+
+    setReviews(updatedReviews);
+  };
+
+  return (
+    <section className="reviews">
+      <h2>Recipe Reviews</h2>
+
+      {/* Display and modify the shared state */}
+      <div className="shared-state">
+        <p>Recipes Cooked: {recipesCooked}</p>
+
+        <button
+          type="button"
+          onClick={() => setRecipesCooked(recipesCooked + 1)}
+        >
+          Add One
+        </button>
+      </div>
+
+      <ReviewForm
+        reviews={reviews}
+        setReviews={setReviews}
+      />
+
+      <div className="review-list">
+        {reviews.map((review) => (
+          <ReviewCard
+            key={review.id}
+            id={review.id}
+            recipeName={review.recipeName}
+            reviewer={review.reviewer}
+            rating={review.rating}
+            comment={review.comment}
+            removeReview={removeReview}
+          />
+        ))}
+      </div>
+    </section>
+  );
+}
+
+export default Reviews;
