@@ -37,6 +37,8 @@ function RecipeForm({ recipes, setRecipes }: RecipeFormProps) {
 
   return (
     <form onSubmit={addRecipe}>
+      <h3>Add Recipe</h3>
+      
       <div>
         <label htmlFor="recipeName">Recipe Name:</label>
         <input
@@ -50,12 +52,12 @@ function RecipeForm({ recipes, setRecipes }: RecipeFormProps) {
 
       <div>
         <label htmlFor="recipeDescription">Description:</label>
-        <input
-          id="recipeDescription"
-          type="text"
-          value={recipeDescription}
-          onChange={(event) => setRecipeDescription(event.target.value)}
-          placeholder="Enter recipe description"
+        <textarea
+            id="recipeDescription"
+            value={recipeDescription}
+            onChange={(event) => setRecipeDescription(event.target.value)}
+            placeholder="Enter recipe description"
+            rows={4}
         />
       </div>
 
