@@ -57,38 +57,44 @@ function ReviewForm({ reviews, setReviews }: ReviewFormProps) {
           type="text"
           value={recipeName}
           onChange={(e) => setRecipeName(e.target.value)}
+          placeholder="Enter recipe name"
         />
       </label>
 
-      <label>
-        Your Name:
-        <input
-          type="text"
-          value={reviewer}
-          onChange={(e) => setReviewer(e.target.value)}
-        />
-      </label>
+      {/* Your Name and Rating on the same row */}
+      <div className="review-name-rating">
+        <label>
+          Your Name:
+          <input
+            type="text"
+            value={reviewer}
+            onChange={(e) => setReviewer(e.target.value)}
+            placeholder="Enter your name"
+          />
+        </label>
 
-      <label>
-        Rating:
-        <select
-          value={rating}
-          onChange={(e) => setRating(Number(e.target.value))}
-        >
-          <option value={1}>1</option>
-          <option value={2}>2</option>
-          <option value={3}>3</option>
-          <option value={4}>4</option>
-          <option value={5}>5</option>
-        </select>
-      </label>
+        <label>
+          Rating:
+          <select
+            value={rating}
+            onChange={(e) => setRating(Number(e.target.value))}
+          >
+            <option value={1}>1</option>
+            <option value={2}>2</option>
+            <option value={3}>3</option>
+            <option value={4}>4</option>
+            <option value={5}>5</option>
+          </select>
+        </label>
+      </div>
 
       <label>
         Comment:
-        <input
-          type="text"
+        <textarea
           value={comment}
           onChange={(e) => setComment(e.target.value)}
+          placeholder="Enter your review"
+          rows={4}
         />
       </label>
 
