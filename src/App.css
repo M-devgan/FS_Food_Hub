@@ -1,59 +1,81 @@
-/* Main page */
 body {
   margin: 0;
-  font-family: Arial, sans-serif;
-  background-color: #fffaf5;
-  color: #333;
+  background-color: #fff8f2;
+  color: #382b30;
+  font-family: 'Segoe UI', Arial, sans-serif;
 }
 
-/* Header */
+/* HEADER */
+
 header {
-  text-align: center;
-  padding: 30px 20px;
-  background-color: #8b4513;
+  background: linear-gradient(135deg, #54172e, #852d4c);
   color: white;
+  text-align: center;
+  padding: 45px 20px 30px;
+  box-shadow: 0 5px 20px rgba(84, 23, 46, 0.15);
 }
 
 header h1 {
+  color: white;
+  font-size: 46px;
+  font-weight: 800;
+  letter-spacing: 1px;
   margin: 0;
-  font-size: 36px;
 }
 
 header p {
-  margin: 8px 0 0;
+  color: #f8dce5;
+  font-size: 16px;
+  margin: 12px 0 0;
 }
 
-/* Navigation */
+/* NAVIGATION */
+
 nav {
   display: flex;
   justify-content: center;
-  gap: 25px;
-  margin-top: 10px;
+  flex-wrap: wrap;
+  gap: 15px;
+  margin-top: 28px;
 }
 
 nav a {
   color: white;
   text-decoration: none;
-  font-weight: bold;
+  padding: 11px 25px;
+  border-radius: 30px;
+  font-size: 15px;
+  font-weight: 600;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  transition: all 0.3s ease;
 }
 
 nav a:hover {
-  text-decoration: underline;
+  background-color: white;
+  color: #6d213c;
+  text-decoration: none;
+  transform: translateY(-2px);
 }
 
 nav a.active {
-  text-decoration: underline;
+  background-color: #f4d5a0;
+  color: #54172e;
+  border-color: #f4d5a0;
+  text-decoration: none;
 }
 
-/* Main content */
+/* MAIN CONTENT */
+
 main {
-  width: 90%;
-  max-width: 1100px;
+  width: 92%;
+  max-width: 1200px;
   margin: 0 auto;
-  padding: 30px 0;
+  padding: 50px 0;
+  flex: 1;
 }
 
-/* Sections */
+/* SECTION STYLING */
+
 .recipe-list,
 .ingredients-list,
 .reviews {
@@ -63,105 +85,326 @@ main {
 .recipe-list h2,
 .ingredients-list h2,
 .reviews h2 {
+  color: #6d213c;
+  font-size: 30px;
+  font-weight: 750;
   text-align: center;
-  margin-bottom: 20px;
+  margin-bottom: 35px;
+  letter-spacing: -0.5px;
 }
 
-/* Card layouts */
+/* CARD LAYOUT */
+
 .recipe-cards,
 .ingredient-cards,
 .review-list {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 20px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 25px;
+  margin-top: 30px;
 }
 
-/* Cards */
+/* RECIPE, INGREDIENT AND REVIEW CARDS */
+
 .recipe-card,
 .ingredient-card,
 .review-card {
-  background-color: white;
-  border: 1px solid #ddd;
-  border-radius: 10px;
-  padding: 20px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  background-color: #ffffff;
+  border: 1px solid #f0e0e5;
+  border-radius: 18px;
+  padding: 25px;
+  box-shadow: 0 8px 25px rgba(84, 23, 46, 0.08);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  min-width: 0;
 }
 
-/* Recipe and ingredient icons */
+.recipe-card:hover,
+.ingredient-card:hover,
+.review-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 15px 35px rgba(84, 23, 46, 0.15);
+}
+
+/* RECIPE AND INGREDIENT ICONS */
+
 .recipe-image,
 .ingredient-image {
-  font-size: 40px;
+  background-color: #fff0e6;
+  border-radius: 14px;
+  padding: 25px;
+  font-size: 48px;
   text-align: center;
-  margin-bottom: 15px;
+  margin-bottom: 20px;
 }
 
-/* Card headings */
+/* CARD HEADINGS */
+
 .recipe-card h3,
 .ingredient-card h3,
 .review-card h3 {
-  margin-top: 0;
+  color: #6d213c;
+  font-size: 21px;
+  font-weight: 700;
+  margin: 0 0 12px;
 }
 
-/* Recipe button */
-.recipe-card button {
-  padding: 8px 14px;
-  border: none;
-  border-radius: 5px;
-  background-color: #8b4513;
-  color: white;
-  cursor: pointer;
+/* CARD TEXT */
+
+.recipe-card p,
+.ingredient-card p,
+.review-card p {
+  color: #655b60;
+  line-height: 1.7;
+  font-size: 15px;
+  margin-bottom: 15px;
 }
 
-.recipe-card button:hover {
-  background-color: #6f350f;
-}
+/* BUTTON STYLING */
 
-.recipe-card button:focus-visible {
-  outline: 3px solid #333;
-  outline-offset: 2px;
-}
-
-/* Ingredient buttons */
+.recipe-card button,
+.ingredient-card button,
 .ingredient-form button,
-.ingredient-card button {
-  padding: 8px 14px;
+.recipe-list form button,
+.reviews button {
+  background-color: #762642;
+  color: white;
   border: none;
-  border-radius: 5px;
-  background-color: #8b4513;
-  color: white;
+  border-radius: 10px;
+  padding: 12px 20px;
+  font-size: 14px;
+  font-weight: 600;
   cursor: pointer;
+  margin: 8px 8px 8px 0;
+  transition: all 0.3s ease;
 }
 
-/* Ingredient button hover */
+/* BUTTON HOVER */
+
+.recipe-card button:hover,
+.ingredient-card button:hover,
 .ingredient-form button:hover,
-.ingredient-card button:hover {
-  background-color: #6f350f;
+.recipe-list form button:hover,
+.reviews button:hover {
+  background-color: #54172e;
+  transform: translateY(-2px);
+  box-shadow: 0 5px 12px rgba(84, 23, 46, 0.2);
 }
 
-/* Ingredient button keyboard focus */
-.ingredient-form button:focus-visible,
-.ingredient-card button:focus-visible {
-  outline: 3px solid #333;
-  outline-offset: 2px;
+/* BUTTON KEYBOARD FOCUS */
+
+button:focus-visible,
+nav a:focus-visible {
+  outline: 3px solid #d4a64a;
+  outline-offset: 3px;
 }
 
-/* Footer */
-footer {
+/* FORM CONTAINERS */
+
+.recipe-list form,
+.ingredient-form,
+.reviews form {
+  background-color: white;
+  border: 1px solid #f0e0e5;
+  border-radius: 18px;
+  padding: 30px;
+  margin: 25px auto 35px;
+  max-width: 650px;
+  box-shadow: 0 8px 25px rgba(84, 23, 46, 0.07);
+}
+
+/* FORM HEADINGS */
+
+.recipe-list form h3,
+.ingredient-form h2,
+.reviews form h3 {
+  color: #6d213c;
+  font-family: 'Segoe UI', Arial, sans-serif;
+  font-size: 26px;
+  font-weight: 700;
   text-align: center;
-  padding: 20px;
-  background-color: #8b4513;
-  color: white;
+  margin: 0 0 25px;
 }
 
-/* Responsive layout */
+/* FORM LABELS */
+
+.recipe-list form label,
+.ingredient-form label,
+.reviews form label {
+  display: block;
+  text-align: left;
+  font-weight: 600;
+  color: #54172e;
+  margin: 12px 0 8px;
+}
+
+/* FORM INPUT FIELDS */
+
+.recipe-list input,
+.ingredient-form input,
+.reviews input,
+.recipe-list textarea,
+.ingredient-form textarea,
+.reviews textarea,
+.recipe-list select,
+.ingredient-form select,
+.reviews select {
+  width: 100%;
+  max-width: 100%;
+  padding: 12px 15px;
+  border: 1px solid #dfcbd2;
+  border-radius: 10px;
+  background-color: #fffdfb;
+  color: #382b30;
+  font-size: 15px;
+  font-family: 'Segoe UI', Arial, sans-serif;
+  font-weight: 400;
+  box-sizing: border-box;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* INPUT FOCUS */
+
+.recipe-list input:focus,
+.ingredient-form input:focus,
+.reviews input:focus,
+.recipe-list textarea:focus,
+.ingredient-form textarea:focus,
+.reviews textarea:focus,
+.recipe-list select:focus,
+.ingredient-form select:focus,
+.reviews select:focus {
+  outline: none;
+  border-color: #a94b6b;
+  box-shadow: 0 0 0 3px rgba(169, 75, 107, 0.15);
+}
+
+/* SHARED STATE SECTION */
+
+.shared-state {
+  background-color: #fff0e6;
+  border: 1px solid #f2d8c8;
+  border-radius: 14px;
+  padding: 20px;
+  text-align: center;
+  margin: 20px auto 30px;
+  max-width: 650px;
+}
+
+.shared-state p {
+  color: #6d213c;
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+
+.shared-state button {
+  background-color: #762642;
+  color: white;
+  border: none;
+  padding: 10px 22px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background-color 0.3s ease;
+}
+
+.shared-state button:hover {
+  background-color: #54172e;
+}
+
+/* FOOTER */
+
+footer {
+  background-color: #54172e;
+  color: #f8dce5;
+  padding: 25px 20px;
+  text-align: center;
+  margin-top: 40px;
+}
+
+footer p {
+  color: #f8dce5;
+  font-size: 14px;
+}
+
+/* TABLET RESPONSIVE DESIGN */
+
+@media (max-width: 950px) {
+  .recipe-cards,
+  .ingredient-cards,
+  .review-list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* MOBILE RESPONSIVE DESIGN */
+
 @media (max-width: 768px) {
+  header {
+    padding: 30px 15px;
+  }
+
+  header h1 {
+    font-size: 34px;
+  }
+
+  nav {
+    gap: 10px;
+  }
+
+  nav a {
+    padding: 10px 16px;
+    font-size: 14px;
+  }
+
+  main {
+    width: 92%;
+    padding: 30px 0;
+  }
+
   .recipe-cards,
   .ingredient-cards,
   .review-list {
     grid-template-columns: 1fr;
   }
 
-  header h1 {
-    font-size: 30px;
+  .recipe-list h2,
+  .ingredients-list h2,
+  .reviews h2 {
+    font-size: 25px;
+  }
+
+  .recipe-list form,
+  .ingredient-form,
+  .reviews form {
+    padding: 20px;
+  }
+}
+
+/* Review form - Name and Rating side by side */
+
+.review-name-rating {
+  display: grid;
+  grid-template-columns: minmax(0, 4fr) minmax(0, 1fr);
+  gap: 15px;
+  align-items: end;
+}
+
+.review-name-rating label {
+  min-width: 0;
+}
+
+/* Larger review comment box */
+
+.reviews textarea {
+  min-height: 110px;
+  resize: vertical;
+}
+
+/* Responsive layout for smaller screens */
+
+@media (max-width: 480px) {
+  .review-name-rating {
+    grid-template-columns: 1fr;
   }
 }

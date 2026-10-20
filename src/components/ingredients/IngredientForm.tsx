@@ -49,26 +49,28 @@ function IngredientForm({
 
       <form onSubmit={handleSubmit}>
         <div>
-          <label htmlFor="ingredient-name">Ingredient Name</label>
+          <label htmlFor="ingredient-name">Ingredient Name:</label>
 
           <input
             id="ingredient-name"
             type="text"
             value={name}
             onChange={(event) => setName(event.target.value)}
+            placeholder="Enter ingredient name"
           />
         </div>
 
         <div>
           <label htmlFor="ingredient-characteristics">
-            Characteristics
+            Characteristics:
           </label>
 
-          <input
+          <textarea
             id="ingredient-characteristics"
-            type="text"
             value={characteristics}
             onChange={(event) => setCharacteristics(event.target.value)}
+            placeholder="Enter ingredient characteristics"
+            rows={4}
           />
         </div>
 
