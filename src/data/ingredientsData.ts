@@ -1,5 +1,6 @@
+import type { Ingredient } from "../types/Ingredient";
 
-export const ingredientsData = [
+export const ingredientsData: Ingredient[] = [
   {
     id: 1,
     name: "Pasta",
