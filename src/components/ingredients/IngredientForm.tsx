@@ -1,21 +1,12 @@
 import { useState } from "react";
-
-type Ingredient = {
-  id: number;
-  name: string;
-  characteristics: string;
-  recipes: number[];
-};
+import type { Ingredient } from "../../types/Ingredient";
+import { ingredientRepository } from "../../repositories/ingredientRepository";
 
 type IngredientFormProps = {
-  ingredients: Ingredient[];
   setIngredients: React.Dispatch<React.SetStateAction<Ingredient[]>>;
 };
 
-function IngredientForm({
-  ingredients,
-  setIngredients,
-}: IngredientFormProps) {
+function IngredientForm({ setIngredients }: IngredientFormProps) {
   const [name, setName] = useState("");
   const [characteristics, setCharacteristics] = useState("");
 
@@ -28,15 +19,18 @@ function IngredientForm({
     }
 
     // Create a new ingredient
-    const newIngredient = {
+    const newIngredient: Ingredient = {
       id: Date.now(),
-      name: name,
-      characteristics: characteristics,
+      name: name.trim(),
+      characteristics: characteristics.trim(),
       recipes: [],
     };
 
-    // Add the new ingredient to the list
-    setIngredients([...ingredients, newIngredient]);
+    // Add the ingredient using the repository
+    ingredientRepository.create(newIngredient);
+
+    // Refresh the ingredient list from the repository
+    setIngredients(ingredientRepository.getAll());
 
     // Clear the form after adding
     setName("");
