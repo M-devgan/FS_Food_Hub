@@ -1,7 +1,6 @@
-
 import { useState } from "react";
 import IngredientForm from "./IngredientForm";
-import { ingredientsData } from "../../data/ingredientsData";
+import { ingredientRepository } from "../../repositories/ingredientRepository";
 
 // Props received from App.tsx for shared state
 type IngredientsListProps = {
@@ -15,14 +14,15 @@ function IngredientsList({
   setRecipesCooked,
 }: IngredientsListProps) {
 
-  // Ingredient data imported from a separate file
-  const [ingredients, setIngredients] = useState(ingredientsData);
+  // Get ingredient data from the repository
+  const [ingredients, setIngredients] = useState(() =>
+    ingredientRepository.getAll()
+  );
 
-  // Remove an ingredient from the list
+  // Remove an ingredient using the repository
   const removeIngredient = (id: number) => {
-    setIngredients(
-      ingredients.filter((ingredient) => ingredient.id !== id)
-    );
+    ingredientRepository.remove(id);
+    setIngredients(ingredientRepository.getAll());
   };
 
   // Return the Ingredients section that will be displayed on the page
@@ -43,10 +43,7 @@ function IngredientsList({
       </div>
 
       {/* Form for adding a new ingredient */}
-      <IngredientForm
-        ingredients={ingredients}
-        setIngredients={setIngredients}
-      />
+      <IngredientForm setIngredients={setIngredients} />
 
       <div className="ingredient-cards">
 
