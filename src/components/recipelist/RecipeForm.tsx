@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useFormFields } from '../../hooks/useFormFields'
 
 type Recipe = {
   id: number
@@ -13,8 +13,17 @@ type RecipeFormProps = {
 }
 
 function RecipeForm({ recipes, setRecipes }: RecipeFormProps) {
-  const [recipeName, setRecipeName] = useState('')
-  const [recipeDescription, setRecipeDescription] = useState('')
+const {
+  value: recipeName,
+  setValue: setRecipeName,
+  resetValue: resetRecipeName,
+} = useFormFields('')
+
+const {
+  value: recipeDescription,
+  setValue: setRecipeDescription,
+  resetValue: resetRecipeDescription,
+} = useFormFields('')
 
   const addRecipe = (event: React.FormEvent) => {
     event.preventDefault()
@@ -31,8 +40,8 @@ function RecipeForm({ recipes, setRecipes }: RecipeFormProps) {
     }
 
     setRecipes([...recipes, newRecipe])
-    setRecipeName('')
-    setRecipeDescription('')
+    resetRecipeName()
+    resetRecipeDescription()
   }
 
   return (

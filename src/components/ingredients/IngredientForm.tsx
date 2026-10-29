@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useFormFields } from "../../hooks/useFormFields";
 import type { Ingredient } from "../../types/Ingredient";
 import { ingredientRepository } from "../../repositories/ingredientRepository";
 
@@ -7,8 +7,17 @@ type IngredientFormProps = {
 };
 
 function IngredientForm({ setIngredients }: IngredientFormProps) {
-  const [name, setName] = useState("");
-  const [characteristics, setCharacteristics] = useState("");
+  const {
+    value: name,
+    setValue: setName,
+    resetValue: resetName,
+  } = useFormFields("");
+
+  const {
+    value: characteristics,
+    setValue: setCharacteristics,
+    resetValue: resetCharacteristics,
+  } = useFormFields("");
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -33,8 +42,8 @@ function IngredientForm({ setIngredients }: IngredientFormProps) {
     setIngredients(ingredientRepository.getAll());
 
     // Clear the form after adding
-    setName("");
-    setCharacteristics("");
+    resetName();
+    resetCharacteristics();
   };
 
   return (
