@@ -6,7 +6,7 @@ This document explains the architecture used for the Recipes feature in the Food
 
 The purpose of this architecture is to keep presentation logic, business logic, and data access logic separate.
 
-The Recipes feature uses a repository to manage recipe data and a custom hook to manage form input values. Service integration is being handled as part of the team's Sprint 3 work.
+The Recipes feature uses a custom hook to manage form input values, a service to handle recipe validation and preparation, and a repository to manage recipe data. These are integrated into the Recipes components as part of Sprint 3.
 
 This structure helps keep the code organized, reusable, and easier to maintain.
 
@@ -39,17 +39,31 @@ The hook only handles presentation-related form state. It does not contain busin
 
 ## 3. Service
 
+### Service Name: recipeService
+
+**File:** `src/services/recipeService.ts`
+
 **Purpose:**
 
-The service layer is responsible for handling reusable business logic separately from components and repositories.
+The `recipeService` handles business logic for the Recipes feature. It validates recipe information and prepares recipe objects before they are saved.
+
+**How It Works:**
+
+* `isValidRecipe()`: Checks that the recipe name and description are not empty.
+* `prepareRecipe()`: Creates a recipe object with an ID, name, description, and empty ingredients array. It also removes extra spaces from the name and description.
 
 **Logic Separation:**
 
-Services contain business rules and operations, while custom hooks handle presentation logic and repositories manage data access.
+I created this service to keep recipe validation and preparation logic separate from React components.
+
+The service handles business rules, while the custom hook manages form inputs and the repository handles data access.
 
 **Where and How It Is Used:**
 
-The team is working on T.2 – Service Definitions. Service integration for the Recipes feature is still pending, so its specific implementation and usage cannot yet be documented.
+* `RecipeForm.tsx` calls `isValidRecipe()` to validate the recipe name and description.
+* After validation, `RecipeForm.tsx` calls `prepareRecipe()` to prepare the recipe object.
+* The prepared recipe is then saved using `recipeRepository.create()`.
+
 
 ## 4. Repository
 
@@ -74,11 +88,15 @@ The repository imports recipe test data from `src/data/recipesData.ts`, which co
 
 I created the repository to keep data access logic separate from React components. The repository handles recipe data operations, while presentation logic belongs in components or custom hooks and business logic belongs in services.
 
-**Where and How It Is Used:**
+The repository imports and manages 10 recipe objects from recipesData.ts. It provides CRUD methods to retrieve, create, update, and delete recipes.
 
-The repository imports and manages recipe test data through its CRUD methods. It was created as part of I.1 and I.2 and has been merged into `develop`.
+Where and How It Is Used:
 
-Integration with the Recipes components is part of the I.3 refactoring work.
+recipelist.tsx uses recipeRepository.getAll() to retrieve and display recipes.
+recipelist.tsx uses recipeRepository.delete() to remove recipes.
+RecipeForm.tsx uses recipeRepository.create() to save new recipes and getAll() to refresh the displayed list.
+
+This keeps recipe data access separate from the components. The repository was created as part of I.1 and I.2 and integrated into the Recipes components during I.3.
 
 ## 5. Separation of Logic
 
@@ -110,16 +128,25 @@ Separating these responsibilities makes the application easier to understand, te
 
 The Recipe Form uses the `useFormFields` custom hook to manage recipe name and description inputs.
 
-The hook updates input values when the user types and resets both fields after a recipe is added.
+It uses `recipeService.isValidRecipe()` to validate the input and `recipeService.prepareRecipe()` to prepare the recipe object.
 
-### Recipe Repository
+After validation, `recipeRepository.create()` saves the new recipe, and `recipeRepository.getAll()` retrieves the updated recipe list.
 
-The `recipeRepository` provides CRUD operations for recipe data and imports the test data from `recipesData.ts`.
+The custom hook resets the form fields after a recipe is added.
 
-The repository will be connected to the Recipes components during the I.3 refactoring work.
+### recipelist.tsx
 
-### Service Integration
+The Recipe List uses `recipeRepository.getAll()` to retrieve and display recipes from the test data.
 
-The service layer will handle business logic separately from presentation and data access logic.
+When a user clicks the Remove Recipe button, `recipeRepository.delete()` removes the selected recipe, and `getAll()` retrieves the updated list.
 
-The exact service usage will depend on the team's T.2 implementation.
+### Architecture Benefits
+
+This implementation separates responsibilities:
+
+* **Custom Hook:** Manages form input values and resets.
+* **Service:** Handles recipe validation and preparation.
+* **Repository:** Manages recipe data and CRUD operations.
+* **Components:** Display recipes and handle user interactions.
+
+This separation makes the Recipes feature easier to understand, maintain, and reuse.
