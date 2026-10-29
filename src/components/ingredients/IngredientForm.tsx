@@ -1,6 +1,8 @@
+
 import { useFormFields } from "../../hooks/useFormFields";
 import type { Ingredient } from "../../types/Ingredient";
 import { ingredientRepository } from "../../repositories/ingredientRepository";
+import { ingredientService } from "../../services/ingredientService";
 
 type IngredientFormProps = {
   setIngredients: React.Dispatch<React.SetStateAction<Ingredient[]>>;
@@ -22,18 +24,17 @@ function IngredientForm({ setIngredients }: IngredientFormProps) {
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    // Do not add an ingredient if the fields are empty
-    if (name.trim() === "" || characteristics.trim() === "") {
+    // Validate ingredient information using the service
+    if (!ingredientService.isValidIngredient(name, characteristics)) {
       return;
     }
 
-    // Create a new ingredient
-    const newIngredient: Ingredient = {
-      id: Date.now(),
-      name: name.trim(),
-      characteristics: characteristics.trim(),
-      recipes: [],
-    };
+    // Prepare the new ingredient using the service
+    const newIngredient = ingredientService.prepareIngredient(
+      Date.now(),
+      name,
+      characteristics
+    );
 
     // Add the ingredient using the repository
     ingredientRepository.create(newIngredient);

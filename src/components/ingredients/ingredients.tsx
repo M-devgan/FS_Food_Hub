@@ -1,6 +1,8 @@
+
 import { useState } from "react";
 import IngredientForm from "./IngredientForm";
 import { ingredientRepository } from "../../repositories/ingredientRepository";
+import { ingredientService } from "../../services/ingredientService";
 
 // Props received from App.tsx for shared state
 type IngredientsListProps = {
@@ -21,6 +23,12 @@ function IngredientsList({
 
   // Remove an ingredient using the repository
   const removeIngredient = (id: number) => {
+    // Validate the ingredient ID using the service
+    if (!ingredientService.canRemoveIngredient(id)) {
+      return;
+    }
+
+    // Remove the ingredient using the repository
     ingredientRepository.remove(id);
     setIngredients(ingredientRepository.getAll());
   };
