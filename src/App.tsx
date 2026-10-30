@@ -1,14 +1,10 @@
 import './App.css'
-import { useState } from 'react'
 import RecipeList from './components/recipelist/recipelist'
 import IngredientsList from './components/ingredients/ingredients'
 import Reviews from './components/reviews/reviews'
 import { BrowserRouter, Routes, Route, Navigate, NavLink } from 'react-router-dom'
 
 function App() {
-  // Shared state used across all feature pages
-  const [recipesCooked, setRecipesCooked] = useState(0)
-
   return (
     <BrowserRouter>
       <header>
@@ -31,32 +27,17 @@ function App() {
 
           <Route
             path="/recipes"
-            element={
-              <RecipeList
-                recipesCooked={recipesCooked}
-                setRecipesCooked={setRecipesCooked}
-              />
-            }
+            element={<RecipeList />}
           />
 
           <Route
             path="/ingredients"
-            element={
-              <IngredientsList
-                recipesCooked={recipesCooked}
-                setRecipesCooked={setRecipesCooked}
-              />
-            }
+            element={<IngredientsList />}
           />
 
           <Route
             path="/reviews"
-            element={
-              <Reviews
-                recipesCooked={recipesCooked}
-                setRecipesCooked={setRecipesCooked}
-              />
-            }
+            element={<Reviews />}
           />
 
           <Route

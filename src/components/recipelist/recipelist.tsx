@@ -1,40 +1,33 @@
 import { useState } from 'react'
 import RecipeForm from './RecipeForm'
 import { recipeRepository } from '../../repositories/recipeRepository'
-
-// Props for the shared state from App.tsx
-type RecipeListProps = {
-  recipesCooked: number;
-  setRecipesCooked: React.Dispatch<React.SetStateAction<number>>;
-};
+import { useCookingStats } from '../../hooks/useCookingStats'
 
 /*
  * I.3 - Recipe List Architecture
  *
  * Repository: recipeRepository retrieves recipes and removes recipes.
  *
- * This keeps recipe data access separate from the component.
- * The component is responsible for displaying recipes and
- * updating the user interface.
+ * The useCookingStats hook manages the shared Recipes Cooked state
+ * through the hook-service-repository architecture.
+ *
+ * This keeps data access and shared state logic separate from
+ * the component presentation.
  */
-function RecipeList({
-  recipesCooked,
-  setRecipesCooked,
-}: RecipeListProps) {
-
-  const [recipes, setRecipes] = useState(() => recipeRepository.getAll());
+function RecipeList() {
+  const [recipes, setRecipes] = useState(() => recipeRepository.getAll())
+  const { recipesCooked, addRecipeCooked } = useCookingStats()
 
   return (
     <section className="recipe-list">
       <h2>Popular Recipes</h2>
 
-      {/* Display and modify the shared state */}
       <div className="shared-state">
         <p>Recipes Cooked: {recipesCooked}</p>
 
         <button
           type="button"
-          onClick={() => setRecipesCooked(recipesCooked + 1)}
+          onClick={addRecipeCooked}
         >
           Add One
         </button>
@@ -60,8 +53,8 @@ function RecipeList({
               <button
                 type="button"
                 onClick={() => {
-                  recipeRepository.delete(recipe.id);
-                  setRecipes(recipeRepository.getAll());
+                  recipeRepository.delete(recipe.id)
+                  setRecipes(recipeRepository.getAll())
                 }}
               >
                 Remove Recipe
@@ -71,7 +64,7 @@ function RecipeList({
         ))}
       </div>
     </section>
-  );
+  )
 }
 
-export default RecipeList;
+export default RecipeList
