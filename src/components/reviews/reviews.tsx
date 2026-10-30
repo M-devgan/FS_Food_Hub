@@ -1,12 +1,11 @@
 import ReviewForm from "./ReviewForm";
 import ReviewCard from "./ReviewCard";
 import { useReviews } from "../../hooks/useReviews";
+import { useCookingStats } from "../../hooks/useCookingStats";
 
-// Props for the shared state from App.tsx
-type ReviewsProps = {
-  recipesCooked: number;
-  setRecipesCooked: React.Dispatch<React.SetStateAction<number>>;
-};
+function Reviews() {
+  const { reviews, addReview, removeReview } = useReviews();
+  const { recipesCooked, addRecipeCooked } = useCookingStats();
 
 /**
  * Reviews uses the useReviews custom hook to manage review presentation state.
@@ -14,11 +13,7 @@ type ReviewsProps = {
  * The service uses the Review repository for data access.
  * This separates presentation, business, and data access concerns.
  */
-function Reviews({
-  recipesCooked,
-  setRecipesCooked,
-}: ReviewsProps) {
-  const { reviews, addReview, removeReview } = useReviews();
+
 
   return (
     <section className="reviews">
@@ -30,7 +25,7 @@ function Reviews({
 
         <button
           type="button"
-          onClick={() => setRecipesCooked(recipesCooked + 1)}
+          onClick={addRecipeCooked}
         >
           Add One
         </button>
