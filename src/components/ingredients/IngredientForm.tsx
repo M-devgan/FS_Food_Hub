@@ -1,46 +1,64 @@
-import { useState } from "react";
 
-type Ingredient = {
-  id: number;
-  name: string;
-  characteristics: string;
-  recipes: number[];
-};
+import { useFormFields } from "../../hooks/useFormFields";
+import type { Ingredient } from "../../types/Ingredient";
+import { ingredientRepository } from "../../repositories/ingredientRepository";
+import { ingredientService } from "../../services/ingredientService";
 
 type IngredientFormProps = {
-  ingredients: Ingredient[];
   setIngredients: React.Dispatch<React.SetStateAction<Ingredient[]>>;
 };
 
-function IngredientForm({
-  ingredients,
-  setIngredients,
-}: IngredientFormProps) {
-  const [name, setName] = useState("");
-  const [characteristics, setCharacteristics] = useState("");
+/**
+ * IngredientForm uses the useFormFields custom hook to manage
+ * the ingredient name and characteristics input fields.
+ *
+ * The Ingredient Service handles business logic by validating
+ * input and preparing a new Ingredient object.
+ *
+ * The Ingredient Repository handles data access by creating
+ * the ingredient and retrieving the updated ingredient list.
+ *
+ * This separates presentation logic, business logic, and
+ * data access, making the component easier to maintain.
+ */
+
+function IngredientForm({ setIngredients }: IngredientFormProps) {
+  const {
+    value: name,
+    setValue: setName,
+    resetValue: resetName,
+  } = useFormFields("");
+
+  const {
+    value: characteristics,
+    setValue: setCharacteristics,
+    resetValue: resetCharacteristics,
+  } = useFormFields("");
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    // Do not add an ingredient if the fields are empty
-    if (name.trim() === "" || characteristics.trim() === "") {
+    // Validate ingredient information using the service
+    if (!ingredientService.isValidIngredient(name, characteristics)) {
       return;
     }
 
-    // Create a new ingredient
-    const newIngredient = {
-      id: Date.now(),
-      name: name,
-      characteristics: characteristics,
-      recipes: [],
-    };
+    // Prepare the new ingredient using the service
+    const newIngredient = ingredientService.prepareIngredient(
+      Date.now(),
+      name,
+      characteristics
+    );
 
-    // Add the new ingredient to the list
-    setIngredients([...ingredients, newIngredient]);
+    // Add the ingredient using the repository
+    ingredientRepository.create(newIngredient);
+
+    // Refresh the ingredient list from the repository
+    setIngredients(ingredientRepository.getAll());
 
     // Clear the form after adding
-    setName("");
-    setCharacteristics("");
+    resetName();
+    resetCharacteristics();
   };
 
   return (

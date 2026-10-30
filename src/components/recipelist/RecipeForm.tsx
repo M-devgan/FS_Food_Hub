@@ -1,4 +1,6 @@
-import { useState } from 'react'
+import { recipeRepository } from '../../repositories/recipeRepository'
+import { useFormFields } from '../../hooks/useFormFields'
+import { recipeService } from '../../services/recipeService'
 
 type Recipe = {
   id: number
@@ -8,31 +10,48 @@ type Recipe = {
 }
 
 type RecipeFormProps = {
-  recipes: Recipe[]
   setRecipes: React.Dispatch<React.SetStateAction<Recipe[]>>
 }
+/*
+ * I.3 - Recipe Form Architecture
+ *
+ * Custom Hook: useFormFields manages form input values and resets them.
+ * Service: recipeService validates input and prepares recipe data.
+ * Repository: recipeRepository creates recipes and retrieves updated data.
+ *
+ * This separates presentation logic, business logic, and data access
+ * so the component is easier to maintain and reuse.
+ */
+function RecipeForm({ setRecipes }: RecipeFormProps) {
+const {
+  value: recipeName,
+  setValue: setRecipeName,
+  resetValue: resetRecipeName,
+} = useFormFields('')
 
-function RecipeForm({ recipes, setRecipes }: RecipeFormProps) {
-  const [recipeName, setRecipeName] = useState('')
-  const [recipeDescription, setRecipeDescription] = useState('')
+const {
+  value: recipeDescription,
+  setValue: setRecipeDescription,
+  resetValue: resetRecipeDescription,
+} = useFormFields('')
 
   const addRecipe = (event: React.FormEvent) => {
     event.preventDefault()
 
-    if (recipeName.trim() === '' || recipeDescription.trim() === '') {
+    if (!recipeService.isValidRecipe(recipeName, recipeDescription)) {
       return
     }
 
-    const newRecipe = {
-      id: Date.now(),
-      name: recipeName,
-      description: recipeDescription,
-      ingredients: [],
-    }
+    const newRecipe = recipeService.prepareRecipe(
+      Date.now(),
+      recipeName,
+      recipeDescription
+    )
 
-    setRecipes([...recipes, newRecipe])
-    setRecipeName('')
-    setRecipeDescription('')
+    recipeRepository.create(newRecipe)
+    setRecipes(recipeRepository.getAll())
+    resetRecipeName()
+    resetRecipeDescription()
   }
 
   return (
