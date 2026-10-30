@@ -8,6 +8,20 @@ type IngredientFormProps = {
   setIngredients: React.Dispatch<React.SetStateAction<Ingredient[]>>;
 };
 
+/**
+ * IngredientForm uses the useFormFields custom hook to manage
+ * the ingredient name and characteristics input fields.
+ *
+ * The Ingredient Service handles business logic by validating
+ * input and preparing a new Ingredient object.
+ *
+ * The Ingredient Repository handles data access by creating
+ * the ingredient and retrieving the updated ingredient list.
+ *
+ * This separates presentation logic, business logic, and
+ * data access, making the component easier to maintain.
+ */
+
 function IngredientForm({ setIngredients }: IngredientFormProps) {
   const {
     value: name,

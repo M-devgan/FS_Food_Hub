@@ -10,7 +10,21 @@ type IngredientsListProps = {
   setRecipesCooked: React.Dispatch<React.SetStateAction<number>>;
 };
 
-// Ingredients component for displaying ingredients for each recipe
+
+/**
+ * IngredientsList displays ingredient data retrieved from the
+ * Ingredient Repository and manages the displayed list using React state.
+ *
+ * The Ingredient Service validates ingredient IDs before removal,
+ * while the repository handles deleting and retrieving ingredients.
+ *
+ * IngredientForm handles adding new ingredients using the custom
+ * hook, service, and repository.
+ *
+ * This separates presentation logic, business logic, and data access,
+ * making the Ingredients feature easier to maintain.
+ */
+
 function IngredientsList({
   recipesCooked,
   setRecipesCooked,

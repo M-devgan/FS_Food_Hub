@@ -25,7 +25,7 @@ The repository uses the 14 initial mock ingredients from `src/data/ingredientsDa
 
 The repository is responsible for data access and data operations. Keeping this logic separate from React components improves separation of concerns.
 
-The components focus on displaying the user interface, while the repository manages ingredient data. This also makes the code easier to maintain and test.
+The components focus on displaying the user interface, while the repository manages ingredient data. This makes the code easier to maintain and test.
 
 ### Where and how is it used?
 
@@ -38,15 +38,65 @@ The `Ingredient` type in `src/types/Ingredient.ts` ensures the data follows a co
 
 ## 2. Ingredient Service
 
-**Status:** Planned for Team Issue #51 — Service Definitions.
+**File:** `src/services/ingredientService.ts`
 
-The service will contain reusable business logic. Its specific responsibilities and usage will be documented after implementation.
+### What does it do?
+
+The Ingredient Service handles ingredient business logic using three methods:
+
+- `isValidIngredient()` — Checks that the ingredient name and characteristics are not empty.
+- `prepareIngredient()` — Trims input values and prepares a new Ingredient object.
+- `canRemoveIngredient()` — Checks whether an ingredient ID is a positive integer before removal.
+
+### Why does this logic belong in the service?
+
+The service handles business rules separately from React components and the repository.
+
+- The service handles ingredient validation and preparation.
+- The repository manages ingredient data.
+- React components handle the user interface.
+- The custom hook manages form input state.
+
+This separation makes the code easier to maintain and reuse.
+
+### Where and how is it used?
+
+The Ingredient Service is used in two components:
+
+- `src/components/ingredients/IngredientForm.tsx` uses `isValidIngredient()` to validate form input and `prepareIngredient()` to create a new Ingredient object.
+- `src/components/ingredients/ingredients.tsx` uses `canRemoveIngredient()` to validate an ingredient ID before removing it through the repository.
 
 ## 3. Custom Hook
 
-**Status:** Team Issue #50 — Custom Hook Definitions is in progress.
+**File:** `src/hooks/useFormFields.ts`
 
-The team is developing reusable presentation logic. Any hook I contribute to or integrate into the Ingredients feature will be documented here once implemented.
+**Implemented by:** Komal  
+**Integrated into:** `src/components/ingredients/IngredientForm.tsx`
+
+### What does it do?
+
+The `useFormFields` custom hook manages form input values using React state.
+
+It returns three values:
+
+- `value` — Stores the current input value.
+- `setValue` — Updates the input value.
+- `resetValue` — Resets the input after form submission.
+
+### Why does this logic belong in a hook?
+
+The hook handles reusable presentation logic rather than business logic or data access.
+
+It keeps form state management separate from ingredient validation and repository operations.
+
+### Where and how is it used?
+
+In `IngredientForm.tsx`, the hook manages two fields:
+
+- Ingredient name
+- Ingredient characteristics
+
+When the user submits the form, the Ingredient Service validates and prepares the data. The Ingredient Repository stores the new ingredient, and the hook resets the form fields.
 
 ## 4. Architecture Summary
 
@@ -55,6 +105,8 @@ The Ingredients feature separates responsibilities into different layers:
 - **Data:** `ingredientsData.ts` provides the initial mock ingredients.
 - **Type:** `Ingredient.ts` defines the ingredient structure.
 - **Repository:** `ingredientRepository.ts` handles data operations.
+- **Service:** `ingredientService.ts` handles business rules and validation.
+- **Hook:** `useFormFields.ts` manages form input state.
 - **Components:** `ingredients.tsx` and `IngredientForm.tsx` handle the user interface.
 
-This architecture improves organization, maintainability, and separation of concerns.
+This architecture improves organization, maintainability, reusability, and separation of concerns.
