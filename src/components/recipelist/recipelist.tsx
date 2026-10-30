@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import RecipeForm from './RecipeForm'
+import { recipeRepository } from '../../repositories/recipeRepository'
 
 // Props for the shared state from App.tsx
 type RecipeListProps = {
@@ -7,31 +8,21 @@ type RecipeListProps = {
   setRecipesCooked: React.Dispatch<React.SetStateAction<number>>;
 };
 
+/*
+ * I.3 - Recipe List Architecture
+ *
+ * Repository: recipeRepository retrieves recipes and removes recipes.
+ *
+ * This keeps recipe data access separate from the component.
+ * The component is responsible for displaying recipes and
+ * updating the user interface.
+ */
 function RecipeList({
   recipesCooked,
   setRecipesCooked,
 }: RecipeListProps) {
 
-  const [recipes, setRecipes] = useState([
-    {
-      id: 1,
-      name: "Creamy Alfredo Pasta",
-      description: "Creamy pasta made with cheese, garlic, and a rich sauce.",
-      ingredients: [1, 2, 3, 4, 5],
-    },
-    {
-      id: 2,
-      name: "Chicken Tacos",
-      description: "Soft tacos filled with seasoned chicken and fresh vegetables.",
-      ingredients: [2, 6, 7, 8, 9],
-    },
-    {
-      id: 3,
-      name: "Chocolate Cake",
-      description: "Soft chocolate cake with a rich and sweet chocolate flavour.",
-      ingredients: [4, 10, 11, 12, 13, 14],
-    },
-  ]);
+  const [recipes, setRecipes] = useState(() => recipeRepository.getAll());
 
   return (
     <section className="recipe-list">
@@ -49,10 +40,7 @@ function RecipeList({
         </button>
       </div>
 
-      <RecipeForm
-        recipes={recipes}
-        setRecipes={setRecipes}
-      />
+      <RecipeForm setRecipes={setRecipes} />
 
       <div className="recipe-cards">
         {recipes.map((recipe) => (
@@ -71,13 +59,10 @@ function RecipeList({
 
               <button
                 type="button"
-                onClick={() =>
-                  setRecipes(
-                    recipes.filter(
-                      (item) => item.id !== recipe.id
-                    )
-                  )
-                }
+                onClick={() => {
+                  recipeRepository.delete(recipe.id);
+                  setRecipes(recipeRepository.getAll());
+                }}
               >
                 Remove Recipe
               </button>
