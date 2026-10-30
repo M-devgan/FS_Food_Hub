@@ -1,50 +1,48 @@
 import { useState } from "react";
-
-type Review = {
-  id: number;
-  recipeName: string;
-  reviewer: string;
-  rating: number;
-  comment: string;
-};
+import type { Review } from "../../types/Review";
+import { useFormFields } from "../../hooks/useFormFields";
 
 type ReviewFormProps = {
-  reviews: Review[];
-  setReviews: React.Dispatch<React.SetStateAction<Review[]>>;
+  addReview: (review: Review) => void;
 };
 
-function ReviewForm({ reviews, setReviews }: ReviewFormProps) {
-  const [recipeName, setRecipeName] = useState("");
-  const [reviewer, setReviewer] = useState("");
+/**
+ * ReviewForm uses the useFormFields custom hook to manage reusable
+ * presentation logic for the form inputs.
+ *
+ * When the form is submitted, the new Review is passed to addReview.
+ * The Review service handles business validation and the repository
+ * handles the Review data.
+ */
+function ReviewForm({ addReview }: ReviewFormProps) {
+  const recipeName = useFormFields("");
+  const reviewer = useFormFields("");
+  const comment = useFormFields("");
   const [rating, setRating] = useState(5);
-  const [comment, setComment] = useState("");
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (
-      recipeName.trim() === "" ||
-      reviewer.trim() === "" ||
-      comment.trim() === ""
-    ) {
-      alert("Please fill in all fields.");
-      return;
-    }
-
     const newReview: Review = {
       id: Date.now(),
-      recipeName: recipeName,
-      reviewer: reviewer,
-      rating: rating,
-      comment: comment,
+      recipeName: recipeName.value,
+      reviewer: reviewer.value,
+      rating,
+      comment: comment.value,
     };
 
-    setReviews([...reviews, newReview]);
+    try {
+      addReview(newReview);
 
-    setRecipeName("");
-    setReviewer("");
-    setRating(5);
-    setComment("");
+      recipeName.resetValue();
+      reviewer.resetValue();
+      comment.resetValue();
+      setRating(5);
+    } catch (error) {
+      if (error instanceof Error) {
+        alert(error.message);
+      }
+    }
   };
 
   return (
@@ -55,20 +53,19 @@ function ReviewForm({ reviews, setReviews }: ReviewFormProps) {
         Recipe Name:
         <input
           type="text"
-          value={recipeName}
-          onChange={(e) => setRecipeName(e.target.value)}
+          value={recipeName.value}
+          onChange={(e) => recipeName.setValue(e.target.value)}
           placeholder="Enter recipe name"
         />
       </label>
 
-      {/* Your Name and Rating on the same row */}
       <div className="review-name-rating">
         <label>
           Your Name:
           <input
             type="text"
-            value={reviewer}
-            onChange={(e) => setReviewer(e.target.value)}
+            value={reviewer.value}
+            onChange={(e) => reviewer.setValue(e.target.value)}
             placeholder="Enter your name"
           />
         </label>
@@ -91,8 +88,8 @@ function ReviewForm({ reviews, setReviews }: ReviewFormProps) {
       <label>
         Comment:
         <textarea
-          value={comment}
-          onChange={(e) => setComment(e.target.value)}
+          value={comment.value}
+          onChange={(e) => comment.setValue(e.target.value)}
           placeholder="Enter your review"
           rows={4}
         />
