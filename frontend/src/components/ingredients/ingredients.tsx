@@ -6,25 +6,20 @@ import { useCookingStats } from "../../hooks/useCookingStats";
 import type { Ingredient } from "../../types/Ingredient";
 
 /**
- * IngredientsList displays ingredient data retrieved from the
- * backend API through the Ingredient Repository.
- *
- * The Ingredient Service validates ingredient IDs before removal,
- * while the repository handles deleting and retrieving ingredients.
- *
- * The useCookingStats hook manages the shared Recipes Cooked state
- * through the hook-service-repository architecture.
- *
- * This separates presentation logic, business logic, and data access,
- * making the Ingredients feature easier to maintain.
+ * IngredientsList retrieves ingredient data from the backend API
+ * and supports reading, updating, and removing ingredients.
  */
 function IngredientsList() {
   const { recipesCooked, addRecipeCooked } = useCookingStats();
 
-  // Store ingredients retrieved from the backend
   const [ingredients, setIngredients] = useState<Ingredient[]>([]);
 
-  // Load ingredients from the backend API
+  // State for editing ingredients
+  const [editingId, setEditingId] = useState<number | null>(null);
+  const [editName, setEditName] = useState("");
+  const [editCharacteristics, setEditCharacteristics] = useState("");
+
+  // Load ingredients from the backend
   useEffect(() => {
     ingredientRepository.getAll()
       .then(setIngredients)
@@ -33,9 +28,8 @@ function IngredientsList() {
       });
   }, []);
 
-  // Remove an ingredient using the backend API
+  // Remove an ingredient
   const removeIngredient = async (id: number) => {
-    // Validate the ingredient ID using the service
     if (!ingredientService.canRemoveIngredient(id)) {
       return;
     }
@@ -45,6 +39,37 @@ function IngredientsList() {
       setIngredients(await ingredientRepository.getAll());
     } catch (error) {
       console.error("Failed to remove ingredient:", error);
+    }
+  };
+
+  // Start editing an ingredient
+  const startEditing = (ingredient: Ingredient) => {
+    setEditingId(ingredient.id);
+    setEditName(ingredient.name);
+    setEditCharacteristics(ingredient.characteristics);
+  };
+
+  // Save updated ingredient to the database
+  const saveIngredient = async (id: number) => {
+    if (
+      !ingredientService.isValidIngredient(
+        editName,
+        editCharacteristics
+      )
+    ) {
+      return;
+    }
+
+    try {
+      await ingredientRepository.update(id, {
+        name: editName.trim(),
+        characteristics: editCharacteristics.trim(),
+      });
+
+      setIngredients(await ingredientRepository.getAll());
+      setEditingId(null);
+    } catch (error) {
+      console.error("Failed to update ingredient:", error);
     }
   };
 
@@ -73,15 +98,59 @@ function IngredientsList() {
             </div>
 
             <div className="ingredient-content">
-              <h3>{ingredient.name}</h3>
-              <p>{ingredient.characteristics}</p>
+              {editingId === ingredient.id ? (
+                <>
+                  <input
+                    type="text"
+                    aria-label="Edit ingredient name"
+                    value={editName}
+                    onChange={(event) =>
+                      setEditName(event.target.value)
+                    }
+                  />
 
-              <button
-                type="button"
-                onClick={() => removeIngredient(ingredient.id)}
-              >
-                Remove
-              </button>
+                  <textarea
+                    aria-label="Edit ingredient characteristics"
+                    value={editCharacteristics}
+                    onChange={(event) =>
+                      setEditCharacteristics(event.target.value)
+                    }
+                  />
+
+                  <button
+                    type="button"
+                    onClick={() => saveIngredient(ingredient.id)}
+                  >
+                    Save
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => setEditingId(null)}
+                  >
+                    Cancel
+                  </button>
+                </>
+              ) : (
+                <>
+                  <h3>{ingredient.name}</h3>
+                  <p>{ingredient.characteristics}</p>
+
+                  <button
+                    type="button"
+                    onClick={() => startEditing(ingredient)}
+                  >
+                    Edit
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => removeIngredient(ingredient.id)}
+                  >
+                    Remove
+                  </button>
+                </>
+              )}
             </div>
           </article>
         ))}
