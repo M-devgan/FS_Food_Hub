@@ -1,5 +1,6 @@
 import express from "express";
 import cors from "cors";
+import ingredientRoutes from "./routes/ingredientRoutes.js";
 
 const app = express();
 const PORT = 3000;
@@ -25,6 +26,9 @@ app.use(cors(corsOptions));
 
 // Parse JSON requests
 app.use(express.json());
+
+// Ingredients routes
+app.use("/api/ingredients", ingredientRoutes);
 
 // Test route
 app.get("/", (_req, res) => {
