@@ -1,12 +1,13 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import IngredientForm from "./IngredientForm";
 import { ingredientRepository } from "../../repositories/ingredientRepository";
 import { ingredientService } from "../../services/ingredientService";
 import { useCookingStats } from "../../hooks/useCookingStats";
+import type { Ingredient } from "../../types/Ingredient";
 
 /**
  * IngredientsList displays ingredient data retrieved from the
- * Ingredient Repository and manages the displayed list using React state.
+ * backend API through the Ingredient Repository.
  *
  * The Ingredient Service validates ingredient IDs before removal,
  * while the repository handles deleting and retrieving ingredients.
@@ -20,21 +21,31 @@ import { useCookingStats } from "../../hooks/useCookingStats";
 function IngredientsList() {
   const { recipesCooked, addRecipeCooked } = useCookingStats();
 
-  // Get ingredient data from the repository
-  const [ingredients, setIngredients] = useState(() =>
-    ingredientRepository.getAll()
-  );
+  // Store ingredients retrieved from the backend
+  const [ingredients, setIngredients] = useState<Ingredient[]>([]);
 
-  // Remove an ingredient using the repository
-  const removeIngredient = (id: number) => {
+  // Load ingredients from the backend API
+  useEffect(() => {
+    ingredientRepository.getAll()
+      .then(setIngredients)
+      .catch((error) => {
+        console.error("Failed to load ingredients:", error);
+      });
+  }, []);
+
+  // Remove an ingredient using the backend API
+  const removeIngredient = async (id: number) => {
     // Validate the ingredient ID using the service
     if (!ingredientService.canRemoveIngredient(id)) {
       return;
     }
 
-    // Remove the ingredient using the repository
-    ingredientRepository.remove(id);
-    setIngredients(ingredientRepository.getAll());
+    try {
+      await ingredientRepository.remove(id);
+      setIngredients(await ingredientRepository.getAll());
+    } catch (error) {
+      console.error("Failed to remove ingredient:", error);
+    }
   };
 
   return (
