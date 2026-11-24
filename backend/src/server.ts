@@ -1,6 +1,6 @@
 import express from "express";
 import cors from "cors";
-
+import reviewRoutes from "./routes/reviewRoutes.js";
 const app = express();
 const PORT = 3000;
 
@@ -25,6 +25,9 @@ app.use(cors(corsOptions));
 
 // Parse JSON requests
 app.use(express.json());
+
+// Reviews API routes
+app.use("/api/reviews", reviewRoutes);
 
 // Test route
 app.get("/", (_req, res) => {

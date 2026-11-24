@@ -12,3 +12,11 @@ model Ingredient {
   name            String
   characteristics String
 }
+model Review {
+  id         Int      @id @default(autoincrement())
+  recipeName String
+  reviewer   String
+  rating     Int
+  comment    String
+  createdAt  DateTime @default(now())
+}
