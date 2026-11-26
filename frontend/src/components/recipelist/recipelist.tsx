@@ -1,7 +1,8 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import RecipeForm from './RecipeForm'
 import { recipeRepository } from '../../repositories/recipeRepository'
 import { useCookingStats } from '../../hooks/useCookingStats'
+import type { Recipe } from '../../types/Recipe'
 
 /*
  * I.3 - Recipe List Architecture
@@ -15,8 +16,31 @@ import { useCookingStats } from '../../hooks/useCookingStats'
  * the component presentation.
  */
 function RecipeList() {
-  const [recipes, setRecipes] = useState(() => recipeRepository.getAll())
+  const [recipes, setRecipes] = useState<Recipe[]>([])
+  useEffect(() => {
+  const loadRecipes = async () => {
+    try {
+      const data = await recipeRepository.getAll()
+      setRecipes(data)
+    } catch (error) {
+      console.error("Error loading recipes:", error)
+    }
+  }
+
+  loadRecipes()
+}, [])
   const { recipesCooked, addRecipeCooked } = useCookingStats()
+  const handleDelete = async (id: number) => {
+  try {
+    await recipeRepository.delete(id)
+
+    const updatedRecipes = await recipeRepository.getAll()
+    setRecipes(updatedRecipes)
+  } catch (error) {
+    console.error("Error deleting recipe:", error)
+    alert("Failed to delete recipe. Please try again.")
+  }
+}
 
   return (
     <section className="recipe-list">
@@ -52,10 +76,7 @@ function RecipeList() {
 
               <button
                 type="button"
-                onClick={() => {
-                  recipeRepository.delete(recipe.id)
-                  setRecipes(recipeRepository.getAll())
-                }}
+                onClick={() => handleDelete(recipe.id)}
               >
                 Remove Recipe
               </button>
