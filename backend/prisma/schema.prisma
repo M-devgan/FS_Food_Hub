@@ -8,10 +8,12 @@ datasource db {
 }
 
 model Ingredient {
-  id              Int    @id @default(autoincrement())
-  name            String
-  characteristics String
+  id                Int                @id @default(autoincrement())
+  name              String
+  characteristics   String
+  recipeIngredients RecipeIngredient[]
 }
+
 model Review {
   id         Int      @id @default(autoincrement())
   recipeName String
@@ -19,18 +21,12 @@ model Review {
   rating     Int
   comment    String
   createdAt  DateTime @default(now())
-  id                Int                @id @default(autoincrement())
-  name              String
-  characteristics   String
-
-  recipeIngredients RecipeIngredient[]
 }
 
 model Recipe {
   id                Int                @id @default(autoincrement())
   name              String
   description       String
-
   recipeIngredients RecipeIngredient[]
 }
 
