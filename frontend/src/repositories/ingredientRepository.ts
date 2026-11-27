@@ -1,48 +1,91 @@
 import type { Ingredient } from "../types/Ingredient";
-import { ingredientsData } from "../data/ingredientsData";
 
-let ingredients: Ingredient[] = [...ingredientsData];
+const API_URL = "http://localhost:3000/api/ingredients";
+
+type IngredientInput = Pick<Ingredient, "name" | "characteristics">;
+
+type IngredientResponse = IngredientInput & {
+  id: number;
+  recipes?: number[];
+};
+
+function mapIngredient(data: IngredientResponse): Ingredient {
+  return {
+    ...data,
+    recipes: data.recipes ?? [],
+  };
+}
 
 export const ingredientRepository = {
-  // READ: Get all ingredients
-  getAll(): Ingredient[] {
-    return [...ingredients];
+  async getAll(): Promise<Ingredient[]> {
+    const response = await fetch(API_URL);
+
+    if (!response.ok) {
+      throw new Error("Failed to fetch ingredients");
+    }
+
+    const data: IngredientResponse[] = await response.json();
+    return data.map(mapIngredient);
   },
 
-  // READ: Get one ingredient by ID
-  getById(id: number): Ingredient | undefined {
-    return ingredients.find((ingredient) => ingredient.id === id);
-  },
+  async getById(id: number): Promise<Ingredient | undefined> {
+    const response = await fetch(`${API_URL}/${id}`);
 
-  // CREATE: Add a new ingredient
-  create(ingredient: Ingredient): Ingredient {
-    ingredients.push(ingredient);
-    return ingredient;
-  },
-
-  // UPDATE: Update an existing ingredient
-  update(id: number, updatedIngredient: Partial<Ingredient>): Ingredient | undefined {
-    const index = ingredients.findIndex((ingredient) => ingredient.id === id);
-
-    if (index === -1) {
+    if (response.status === 404) {
       return undefined;
     }
 
-    ingredients[index] = {
-      ...ingredients[index],
-      ...updatedIngredient,
-      id,
-    };
+    if (!response.ok) {
+      throw new Error("Failed to fetch ingredient");
+    }
 
-    return ingredients[index];
+    return mapIngredient(await response.json());
   },
 
-  // DELETE: Remove an ingredient
-  remove(id: number): boolean {
-    const originalLength = ingredients.length;
+  async create(ingredient: IngredientInput): Promise<Ingredient> {
+    const response = await fetch(API_URL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(ingredient),
+    });
 
-    ingredients = ingredients.filter((ingredient) => ingredient.id !== id);
+    if (!response.ok) {
+      throw new Error("Failed to create ingredient");
+    }
 
-    return ingredients.length < originalLength;
+    return mapIngredient(await response.json());
+  },
+
+  async update(
+    id: number,
+    ingredient: IngredientInput
+  ): Promise<Ingredient> {
+    const response = await fetch(`${API_URL}/${id}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(ingredient),
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to update ingredient");
+    }
+
+    return mapIngredient(await response.json());
+  },
+
+  async remove(id: number): Promise<boolean> {
+    const response = await fetch(`${API_URL}/${id}`, {
+      method: "DELETE",
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to remove ingredient");
+    }
+
+    return true;
   },
 };

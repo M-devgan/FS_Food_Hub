@@ -1,6 +1,9 @@
 import express from "express";
 import cors from "cors";
 import reviewRoutes from "./routes/reviewRoutes.js";
+import ingredientRoutes from "./routes/ingredientRoutes.js";
+import recipeRoutes from "./routes/recipeRoutes.js";
+
 const app = express();
 const PORT = 3000;
 
@@ -28,6 +31,11 @@ app.use(express.json());
 
 // Reviews API routes
 app.use("/api/reviews", reviewRoutes);
+// Recipes routes
+app.use("/api/recipes", recipeRoutes);
+
+// Ingredients routes
+app.use("/api/ingredients", ingredientRoutes);
 
 // Test route
 app.get("/", (_req, res) => {

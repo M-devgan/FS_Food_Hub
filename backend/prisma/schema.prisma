@@ -19,4 +19,27 @@ model Review {
   rating     Int
   comment    String
   createdAt  DateTime @default(now())
+  id                Int                @id @default(autoincrement())
+  name              String
+  characteristics   String
+
+  recipeIngredients RecipeIngredient[]
+}
+
+model Recipe {
+  id                Int                @id @default(autoincrement())
+  name              String
+  description       String
+
+  recipeIngredients RecipeIngredient[]
+}
+
+model RecipeIngredient {
+  recipeId     Int
+  ingredientId Int
+
+  recipe     Recipe     @relation(fields: [recipeId], references: [id], onDelete: Cascade)
+  ingredient Ingredient @relation(fields: [ingredientId], references: [id], onDelete: Cascade)
+
+  @@id([recipeId, ingredientId])
 }

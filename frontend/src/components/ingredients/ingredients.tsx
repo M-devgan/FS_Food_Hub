@@ -1,40 +1,76 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import IngredientForm from "./IngredientForm";
 import { ingredientRepository } from "../../repositories/ingredientRepository";
 import { ingredientService } from "../../services/ingredientService";
 import { useCookingStats } from "../../hooks/useCookingStats";
+import type { Ingredient } from "../../types/Ingredient";
 
 /**
- * IngredientsList displays ingredient data retrieved from the
- * Ingredient Repository and manages the displayed list using React state.
- *
- * The Ingredient Service validates ingredient IDs before removal,
- * while the repository handles deleting and retrieving ingredients.
- *
- * The useCookingStats hook manages the shared Recipes Cooked state
- * through the hook-service-repository architecture.
- *
- * This separates presentation logic, business logic, and data access,
- * making the Ingredients feature easier to maintain.
+ * IngredientsList retrieves ingredient data from the backend API
+ * and supports reading, updating, and removing ingredients.
  */
 function IngredientsList() {
   const { recipesCooked, addRecipeCooked } = useCookingStats();
 
-  // Get ingredient data from the repository
-  const [ingredients, setIngredients] = useState(() =>
-    ingredientRepository.getAll()
-  );
+  const [ingredients, setIngredients] = useState<Ingredient[]>([]);
 
-  // Remove an ingredient using the repository
-  const removeIngredient = (id: number) => {
-    // Validate the ingredient ID using the service
+  // State for editing ingredients
+  const [editingId, setEditingId] = useState<number | null>(null);
+  const [editName, setEditName] = useState("");
+  const [editCharacteristics, setEditCharacteristics] = useState("");
+
+  // Load ingredients from the backend
+  useEffect(() => {
+    ingredientRepository.getAll()
+      .then(setIngredients)
+      .catch((error) => {
+        console.error("Failed to load ingredients:", error);
+      });
+  }, []);
+
+  // Remove an ingredient
+  const removeIngredient = async (id: number) => {
     if (!ingredientService.canRemoveIngredient(id)) {
       return;
     }
 
-    // Remove the ingredient using the repository
-    ingredientRepository.remove(id);
-    setIngredients(ingredientRepository.getAll());
+    try {
+      await ingredientRepository.remove(id);
+      setIngredients(await ingredientRepository.getAll());
+    } catch (error) {
+      console.error("Failed to remove ingredient:", error);
+    }
+  };
+
+  // Start editing an ingredient
+  const startEditing = (ingredient: Ingredient) => {
+    setEditingId(ingredient.id);
+    setEditName(ingredient.name);
+    setEditCharacteristics(ingredient.characteristics);
+  };
+
+  // Save updated ingredient to the database
+  const saveIngredient = async (id: number) => {
+    if (
+      !ingredientService.isValidIngredient(
+        editName,
+        editCharacteristics
+      )
+    ) {
+      return;
+    }
+
+    try {
+      await ingredientRepository.update(id, {
+        name: editName.trim(),
+        characteristics: editCharacteristics.trim(),
+      });
+
+      setIngredients(await ingredientRepository.getAll());
+      setEditingId(null);
+    } catch (error) {
+      console.error("Failed to update ingredient:", error);
+    }
   };
 
   return (
@@ -62,15 +98,59 @@ function IngredientsList() {
             </div>
 
             <div className="ingredient-content">
-              <h3>{ingredient.name}</h3>
-              <p>{ingredient.characteristics}</p>
+              {editingId === ingredient.id ? (
+                <>
+                  <input
+                    type="text"
+                    aria-label="Edit ingredient name"
+                    value={editName}
+                    onChange={(event) =>
+                      setEditName(event.target.value)
+                    }
+                  />
 
-              <button
-                type="button"
-                onClick={() => removeIngredient(ingredient.id)}
-              >
-                Remove
-              </button>
+                  <textarea
+                    aria-label="Edit ingredient characteristics"
+                    value={editCharacteristics}
+                    onChange={(event) =>
+                      setEditCharacteristics(event.target.value)
+                    }
+                  />
+
+                  <button
+                    type="button"
+                    onClick={() => saveIngredient(ingredient.id)}
+                  >
+                    Save
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => setEditingId(null)}
+                  >
+                    Cancel
+                  </button>
+                </>
+              ) : (
+                <>
+                  <h3>{ingredient.name}</h3>
+                  <p>{ingredient.characteristics}</p>
+
+                  <button
+                    type="button"
+                    onClick={() => startEditing(ingredient)}
+                  >
+                    Edit
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => removeIngredient(ingredient.id)}
+                  >
+                    Remove
+                  </button>
+                </>
+              )}
             </div>
           </article>
         ))}

@@ -8,9 +8,8 @@ export const recipeService = {
   },
 
   // Prepare a recipe using the correct data structure.
-  prepareRecipe(id: number, name: string, description: string): Recipe {
+  prepareRecipe(name: string, description: string): Omit<Recipe, "id"> {
     return {
-      id,
       name: name.trim(),
       description: description.trim(),
       ingredients: [],
