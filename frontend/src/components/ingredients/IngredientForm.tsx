@@ -1,4 +1,3 @@
-
 import { useFormFields } from "../../hooks/useFormFields";
 import type { Ingredient } from "../../types/Ingredient";
 import { ingredientRepository } from "../../repositories/ingredientRepository";
@@ -13,10 +12,10 @@ type IngredientFormProps = {
  * the ingredient name and characteristics input fields.
  *
  * The Ingredient Service handles business logic by validating
- * input and preparing a new Ingredient object.
+ * ingredient input.
  *
- * The Ingredient Repository handles data access by creating
- * the ingredient and retrieving the updated ingredient list.
+ * The Ingredient Repository handles data access by sending
+ * requests to the backend API and retrieving updated ingredients.
  *
  * This separates presentation logic, business logic, and
  * data access, making the component easier to maintain.
@@ -35,7 +34,9 @@ function IngredientForm({ setIngredients }: IngredientFormProps) {
     resetValue: resetCharacteristics,
   } = useFormFields("");
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (
+    event: React.FormEvent<HTMLFormElement>
+  ) => {
     event.preventDefault();
 
     // Validate ingredient information using the service
@@ -43,22 +44,22 @@ function IngredientForm({ setIngredients }: IngredientFormProps) {
       return;
     }
 
-    // Prepare the new ingredient using the service
-    const newIngredient = ingredientService.prepareIngredient(
-      Date.now(),
-      name,
-      characteristics
-    );
+    try {
+      // Add the ingredient using the backend API
+      await ingredientRepository.create({
+        name: name.trim(),
+        characteristics: characteristics.trim(),
+      });
 
-    // Add the ingredient using the repository
-    ingredientRepository.create(newIngredient);
+      // Refresh the ingredient list from the backend
+      setIngredients(await ingredientRepository.getAll());
 
-    // Refresh the ingredient list from the repository
-    setIngredients(ingredientRepository.getAll());
-
-    // Clear the form after adding
-    resetName();
-    resetCharacteristics();
+      // Clear the form after successfully adding
+      resetName();
+      resetCharacteristics();
+    } catch (error) {
+      console.error("Failed to add ingredient:", error);
+    }
   };
 
   return (
