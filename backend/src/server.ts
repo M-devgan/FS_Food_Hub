@@ -1,5 +1,6 @@
 import express from "express";
 import cors from "cors";
+import recipeRoutes from "./routes/recipeRoutes.js";
 
 const app = express();
 const PORT = 3000;
@@ -25,6 +26,7 @@ app.use(cors(corsOptions));
 
 // Parse JSON requests
 app.use(express.json());
+app.use("/api/recipes", recipeRoutes);
 
 // Test route
 app.get("/", (_req, res) => {
