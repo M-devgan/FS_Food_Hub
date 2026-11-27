@@ -1,43 +1,61 @@
 import type { Recipe } from "../types/Recipe";
-import { recipesData } from "../data/recipesData";
 
-// Start with the premade recipes from our data file
-let recipes: Recipe[] = [...recipesData];
+const API_URL = "http://localhost:3000/api/recipes";
 
 export const recipeRepository = {
-  // READ: Get all recipes
-  getAll(): Recipe[] {
-    return [...recipes];
-  },
+  // GET: Retrieve all recipes from the backend
+  async getAll(): Promise<Recipe[]> {
+    const response = await fetch(API_URL);
 
-  // READ: Get one recipe by ID
-  getById(id: number): Recipe | undefined {
-    return recipes.find((recipe) => recipe.id === id);
-  },
-
-  // CREATE: Add a new recipe
-  create(recipe: Recipe): Recipe {
-    recipes.push(recipe);
-    return recipe;
-  },
-
-  // UPDATE: Update an existing recipe
-  update(id: number, updatedRecipe: Partial<Recipe>): Recipe | undefined {
-    const index = recipes.findIndex((recipe) => recipe.id === id);
-
-    if (index === -1) {
-      return undefined;
+    if (!response.ok) {
+      throw new Error("Failed to retrieve recipes");
     }
 
-    recipes[index] = { ...recipes[index], ...updatedRecipe, id };
-    return recipes[index];
+    return response.json();
   },
 
-  // DELETE: Remove a recipe
-  delete(id: number): boolean {
-    const originalLength = recipes.length;
-    recipes = recipes.filter((recipe) => recipe.id !== id);
+  // POST: Create a recipe in the database
+  async create(recipe: Omit<Recipe, "id">): Promise<Recipe> {
+    const response = await fetch(API_URL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(recipe),
+    });
 
-    return recipes.length < originalLength;
+    if (!response.ok) {
+      throw new Error("Failed to create recipe");
+    }
+
+    return response.json();
+  },
+
+    // PUT: Update an existing recipe in the database
+  async update(id: number, updatedRecipe: Partial<Recipe>): Promise<Recipe> {
+    const response = await fetch(`${API_URL}/${id}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(updatedRecipe),
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to update recipe");
+    }
+
+    return response.json();
+  },
+
+  // DELETE: Remove a recipe from the database
+  async delete(id: number): Promise<void> {
+    const response = await fetch(`${API_URL}/${id}`, {
+      method: "DELETE",
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to delete recipe");
+    }
   },
 };

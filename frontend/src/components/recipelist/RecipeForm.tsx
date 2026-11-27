@@ -35,24 +35,31 @@ const {
   resetValue: resetRecipeDescription,
 } = useFormFields('')
 
-  const addRecipe = (event: React.FormEvent) => {
-    event.preventDefault()
+  const addRecipe = async (event: React.FormEvent) => {
+  event.preventDefault()
 
-    if (!recipeService.isValidRecipe(recipeName, recipeDescription)) {
-      return
-    }
+  if (!recipeService.isValidRecipe(recipeName, recipeDescription)) {
+    return
+  }
 
+  try {
     const newRecipe = recipeService.prepareRecipe(
-      Date.now(),
       recipeName,
       recipeDescription
     )
 
-    recipeRepository.create(newRecipe)
-    setRecipes(recipeRepository.getAll())
+    await recipeRepository.create(newRecipe)
+
+    const updatedRecipes = await recipeRepository.getAll()
+    setRecipes(updatedRecipes)
+
     resetRecipeName()
     resetRecipeDescription()
+  } catch (error) {
+    console.error("Error adding recipe:", error)
+    alert("Failed to add recipe. Please try again.")
   }
+}
 
   return (
     <form onSubmit={addRecipe}>
