@@ -1,5 +1,6 @@
 import express from "express";
 import cors from "cors";
+import reviewRoutes from "./routes/reviewRoutes.js";
 import ingredientRoutes from "./routes/ingredientRoutes.js";
 import recipeRoutes from "./routes/recipeRoutes.js";
 
@@ -28,6 +29,8 @@ app.use(cors(corsOptions));
 // Parse JSON requests
 app.use(express.json());
 
+// Reviews API routes
+app.use("/api/reviews", reviewRoutes);
 // Recipes routes
 app.use("/api/recipes", recipeRoutes);
 

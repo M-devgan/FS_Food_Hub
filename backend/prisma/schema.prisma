@@ -8,6 +8,17 @@ datasource db {
 }
 
 model Ingredient {
+  id              Int    @id @default(autoincrement())
+  name            String
+  characteristics String
+}
+model Review {
+  id         Int      @id @default(autoincrement())
+  recipeName String
+  reviewer   String
+  rating     Int
+  comment    String
+  createdAt  DateTime @default(now())
   id                Int                @id @default(autoincrement())
   name              String
   characteristics   String

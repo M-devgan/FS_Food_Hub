@@ -3,45 +3,73 @@ import type { Review } from "../../types/Review";
 import { useFormFields } from "../../hooks/useFormFields";
 
 type ReviewFormProps = {
-  addReview: (review: Review) => void;
+  addReview: (review: Review) => Promise<void>;
 };
 
 /**
- * ReviewForm uses the useFormFields custom hook to manage reusable
- * presentation logic for the form inputs.
+ * ReviewForm manages the form inputs using the useFormFields hook.
  *
- * When the form is submitted, the new Review is passed to addReview.
- * The Review service handles business validation and the repository
- * handles the Review data.
+ * When submitted, the review is passed to the useReviews hook,
+ * which calls the service and repository to save it in PostgreSQL
+ * through the backend API.
  */
 function ReviewForm({ addReview }: ReviewFormProps) {
   const recipeName = useFormFields("");
   const reviewer = useFormFields("");
   const comment = useFormFields("");
-  const [rating, setRating] = useState(5);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const [rating, setRating] = useState(5);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  // Submit a new review to the backend
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setError(null);
+
+    // Validate required fields
+    if (
+      recipeName.value.trim() === "" ||
+      reviewer.value.trim() === "" ||
+      comment.value.trim() === ""
+    ) {
+      setError("Please fill in all fields.");
+      return;
+    }
+
+    // Validate rating
+    if (!Number.isInteger(rating) || rating < 1 || rating > 5) {
+      setError("Rating must be between 1 and 5.");
+      return;
+    }
 
     const newReview: Review = {
-      id: Date.now(),
-      recipeName: recipeName.value,
-      reviewer: reviewer.value,
+      id: 0, // PostgreSQL generates the actual ID
+      recipeName: recipeName.value.trim(),
+      reviewer: reviewer.value.trim(),
       rating,
-      comment: comment.value,
+      comment: comment.value.trim(),
     };
 
     try {
-      addReview(newReview);
+      setIsSubmitting(true);
 
+      // Wait for the backend to save the review
+      await addReview(newReview);
+
+      // Clear the form after successful submission
       recipeName.resetValue();
       reviewer.resetValue();
       comment.resetValue();
       setRating(5);
-    } catch (error) {
-      if (error instanceof Error) {
-        alert(error.message);
-      }
+    } catch (err) {
+      setError(
+        err instanceof Error
+          ? err.message
+          : "Failed to save review. Please try again."
+      );
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -56,6 +84,7 @@ function ReviewForm({ addReview }: ReviewFormProps) {
           value={recipeName.value}
           onChange={(e) => recipeName.setValue(e.target.value)}
           placeholder="Enter recipe name"
+          disabled={isSubmitting}
         />
       </label>
 
@@ -67,6 +96,7 @@ function ReviewForm({ addReview }: ReviewFormProps) {
             value={reviewer.value}
             onChange={(e) => reviewer.setValue(e.target.value)}
             placeholder="Enter your name"
+            disabled={isSubmitting}
           />
         </label>
 
@@ -75,6 +105,7 @@ function ReviewForm({ addReview }: ReviewFormProps) {
           <select
             value={rating}
             onChange={(e) => setRating(Number(e.target.value))}
+            disabled={isSubmitting}
           >
             <option value={1}>1</option>
             <option value={2}>2</option>
@@ -92,10 +123,20 @@ function ReviewForm({ addReview }: ReviewFormProps) {
           onChange={(e) => comment.setValue(e.target.value)}
           placeholder="Enter your review"
           rows={4}
+          disabled={isSubmitting}
         />
       </label>
 
-      <button type="submit">Add Review</button>
+      {/* Display validation or API errors */}
+      {error && (
+        <p role="alert" style={{ color: "red" }}>
+          {error}
+        </p>
+      )}
+
+      <button type="submit" disabled={isSubmitting}>
+        {isSubmitting ? "Saving..." : "Add Review"}
+      </button>
     </form>
   );
 }

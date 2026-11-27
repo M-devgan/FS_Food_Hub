@@ -2,11 +2,13 @@ import type { Review } from "../types/Review";
 import { reviewRepository } from "../repositories/reviewRepository";
 
 export const reviewService = {
-  getReviews(): Review[] {
+  // GET - Retrieve reviews from the backend
+  async getReviews(): Promise<Review[]> {
     return reviewRepository.getAll();
   },
 
-  addReview(review: Review): Review {
+  // POST - Validate and save a new review
+  async addReview(review: Review): Promise<Review> {
     if (
       review.recipeName.trim() === "" ||
       review.reviewer.trim() === "" ||
@@ -15,14 +17,20 @@ export const reviewService = {
       throw new Error("Please fill in all fields.");
     }
 
-    if (review.rating < 1 || review.rating > 5) {
+    if (!Number.isInteger(review.rating) || review.rating < 1 || review.rating > 5) {
       throw new Error("Rating must be between 1 and 5.");
     }
 
-    return reviewRepository.create(review);
+    return reviewRepository.create({
+      recipeName: review.recipeName,
+      reviewer: review.reviewer,
+      rating: review.rating,
+      comment: review.comment,
+    });
   },
 
-  removeReview(id: number): boolean {
-    return reviewRepository.delete(id);
+  // DELETE - Remove a review from the database
+  async removeReview(id: number): Promise<void> {
+    await reviewRepository.delete(id);
   },
 };

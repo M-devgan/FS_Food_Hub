@@ -1,43 +1,44 @@
 import type { Review } from "../types/Review";
-import { reviewsData } from "../data/reviewsData";
 
-let reviews: Review[] = [...reviewsData];
+const API_URL = "http://localhost:3000/api/reviews";
 
 export const reviewRepository = {
-  // READ - Get all reviews
-  getAll(): Review[] {
-    return reviews;
-  },
+  // GET - Fetch all reviews from PostgreSQL
+  async getAll(): Promise<Review[]> {
+    const response = await fetch(API_URL);
 
-  // READ - Get one review by its ID
-  getById(id: number): Review | undefined {
-    return reviews.find((review) => review.id === id);
-  },
-
-  // CREATE - Add a new review
-  create(review: Review): Review {
-    reviews.push(review);
-    return review;
-  },
-
-  // UPDATE - Update an existing review
-  update(id: number, updatedReview: Review): Review | undefined {
-    const index = reviews.findIndex((review) => review.id === id);
-
-    if (index === -1) {
-      return undefined;
+    if (!response.ok) {
+      throw new Error("Failed to fetch reviews");
     }
 
-    reviews[index] = updatedReview;
-    return reviews[index];
+    return response.json();
   },
 
-  // DELETE - Remove a review
-  delete(id: number): boolean {
-    const originalLength = reviews.length;
+  // POST - Save a new review to PostgreSQL
+  async create(review: Omit<Review, "id">): Promise<Review> {
+    const response = await fetch(API_URL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(review),
+    });
 
-    reviews = reviews.filter((review) => review.id !== id);
+    if (!response.ok) {
+      throw new Error("Failed to create review");
+    }
 
-    return reviews.length < originalLength;
+    return response.json();
+  },
+
+  // DELETE - Remove a review from PostgreSQL
+  async delete(id: number): Promise<void> {
+    const response = await fetch(`${API_URL}/${id}`, {
+      method: "DELETE",
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to delete review");
+    }
   },
 };
