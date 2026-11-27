@@ -46,6 +46,39 @@ export const createRecipe = async (req: Request, res: Response) => {
   }
 };
 
+// PUT: Update an existing recipe
+export const updateRecipe = async (req: Request, res: Response) => {
+  try {
+    const id = Number(req.params.id);
+    const { name, description } = req.body;
+
+    const recipe = await recipeService.updateRecipe(
+      id,
+      name,
+      description
+    );
+
+    return res.status(200).json(recipe);
+  } catch (error) {
+    console.error("Error updating recipe:", error);
+
+    if (
+      typeof error === "object" &&
+      error !== null &&
+      "code" in error &&
+      error.code === "P2025"
+    ) {
+      return res.status(404).json({
+        message: "Recipe not found",
+      });
+    }
+
+    return res.status(500).json({
+      message: "Failed to update recipe",
+    });
+  }
+};
+
 // DELETE: Remove a recipe
 export const deleteRecipe = async (req: Request, res: Response) => {
   try {
