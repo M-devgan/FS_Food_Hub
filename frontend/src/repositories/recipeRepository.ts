@@ -31,6 +31,23 @@ export const recipeRepository = {
     return response.json();
   },
 
+    // PUT: Update an existing recipe in the database
+  async update(id: number, updatedRecipe: Partial<Recipe>): Promise<Recipe> {
+    const response = await fetch(`${API_URL}/${id}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(updatedRecipe),
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to update recipe");
+    }
+
+    return response.json();
+  },
+
   // DELETE: Remove a recipe from the database
   async delete(id: number): Promise<void> {
     const response = await fetch(`${API_URL}/${id}`, {

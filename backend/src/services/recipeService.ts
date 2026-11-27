@@ -60,8 +60,35 @@ export const recipeService = {
     };
   },
 
+  // Update an existing recipe
+async updateRecipe(
+  id: number,
+  name: string,
+  description: string
+) {
+  const recipe = await prisma.recipe.update({
+    where: { id },
+    data: {
+      name,
+      description,
+    },
+    include: {
+      recipeIngredients: true,
+    },
+  });
+
+  return {
+    id: recipe.id,
+    name: recipe.name,
+    description: recipe.description,
+    ingredients: recipe.recipeIngredients.map(
+      (item: RecipeIngredient) => item.ingredientId
+    ),
+  };
+},
+
   // Delete a recipe
-  async deleteRecipe(id: number) {
+async deleteRecipe(id: number) {
     return prisma.recipe.delete({
       where: { id },
     });
